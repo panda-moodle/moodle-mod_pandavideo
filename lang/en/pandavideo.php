@@ -72,5 +72,5 @@ $string['report_watched'] = 'Watched When';
 $string['showvideomap'] = 'Show Map';
 $string['showvideomap_desc'] = 'If checked, show the map after the video player!';
 $string['token'] = 'API TOKEN';
-$string['token_desc'] = 'This token is used to authenticate and authorize communication between your website and Panda Video. You can obtain this API key by accessing the <a href="https://dashboard.pandavideo.com.br/#/settings/advanced" target="_blank">Advanced Settings</a> page in your Panda Video dashboard.<br>If you don’t have an account yet, create one at<a href="https://dashboard.pandavideo.com.br/#/signup" target="_blank">Panda Video – Sign Up</a>.';
+$string['token_desc'] = 'This token is used to authenticate and authorize communication between your website and Panda Video. You can obtain this API key by accessing the <a href="https://dashboard.pandavideo.com.br/#/settings/advanced" target="_blank">Advanced Settings</a> page in your Panda Video dashboard.<br>If you don’t have an account yet, create one at <a href="https://dashboard.pandavideo.com.br/#/signup" target="_blank">Panda Video – Sign Up</a>.';
 $string['view_my_videomap'] = 'Your Visualization Map:';
