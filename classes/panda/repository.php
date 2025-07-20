@@ -24,6 +24,7 @@
 
 namespace mod_pandavideo\panda;
 
+use core\exception\moodle_exception;
 use Exception;
 use stdClass;
 
@@ -60,9 +61,8 @@ class repository {
      * @return mixed
      * @throws Exception
      */
-    public static function oembed($videoid) {
-        $videoid = self::get_video_id($videoid);
-
+    public static function oembed($pandaurl) {
+        $videoid = self::get_video_id($pandaurl);
         if (!$videoid) {
             throw new Exception("VideoId not found");
         }
@@ -109,7 +109,12 @@ class repository {
      * @return stdClass
      * @throws Exception
      */
-    public static function get_video_properties($videoid) {
+    public static function get_video_properties($pandaurl) {
+        $videoid = self::get_video_id($pandaurl);
+        if (!$videoid) {
+            throw new Exception("VideoId not found");
+        }
+
         $endpoint = "/videos/{$videoid}";
         $response = self::http_get($endpoint, self::$baseurl);
         return $response;
@@ -194,5 +199,50 @@ class repository {
             default:
                 throw new Exception("Unexpected error. HTTP code: {$status}");
         }
+    }
+
+    /**
+     * getplayer
+     *
+     * @param string $pandaurl
+     * @param object $pandavideoview
+     * @return string
+     * @throws Exception
+     */
+    public static function getplayer(string $pandaurl, $pandavideoview = null) {
+        global $OUTPUT;
+
+        $config = get_config("pandavideo");
+
+        if (!isset($config->panda_token[10])) {
+            try {
+                $pandavideo = self::oembed($pandaurl);
+            } catch (Exception $e) {
+                return null;
+            }
+            $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
+        } else {
+            try {
+                $pandavideo = self::get_video_properties($pandaurl);
+            } catch (Exception $e) {
+                return null;
+            }
+        }
+
+        $mustachecontext = [
+            "video_player" => $pandavideo->video_player,
+            "pandavideoview_id" => 0,
+            "ratio" => max(($pandavideo->height / $pandavideo->width) * 100, 20),
+            "showvideomap" => false,
+            "videomap_data" => "[]",
+        ];
+        if ($pandavideoview) {
+            $mustachecontext["pandavideoview_id"] = $pandavideoview->id;
+            $mustachecontext["pandavideoview_currenttime"] = intval($pandavideoview->currenttime);
+            $mustachecontext["videomap_data"] =
+                json_decode($pandavideoview->videomap) ? $pandavideoview->videomap : "[]";
+        }
+
+        return $OUTPUT->render_from_template("mod_pandavideo/embed", $mustachecontext);
     }
 }
