@@ -1,7 +1,25 @@
-# Moodle mod_pandavideo
+# 🎥 `mod_pandavideo` Plugin for Moodle
 
-The Moodle mod_pandavideo is an innovative plugin designed to enhance the Panda Video video experience within the Moodle environment. This plugin stands out for its seamless integration, providing a richer and more personalized learning experience for students.
+**Integrate videos from [Panda Video](https://www.pandavideo.com.br) directly into your Moodle!**
 
-## Token
+### ✅ Compatible with Moodle 3.10+
 
-To obtain access credentials, technology team via email: contato@pandavideo.com.br.
+### 🎁 Try it for free:
+
+Create your account with **14 days free**:
+👉 [https://dashboard.pandavideo.com.br/#/signup](https://dashboard.pandavideo.com.br/#/signup)
+
+### ✅ What the plugin does:
+
+* Allows you to add Panda Video videos as activities in Moodle.
+* Supports tokens and secure URLs (using expiring query strings or authentication).
+* Integration with Panda Video’s player directly within the course.
+* Compatible with activity completion tracking.
+* Supports *activity summary* and *display settings*, just like other native Moodle activities.
+
+### ⚙️ Configuration
+
+After installation:
+
+* Go to *Site administration > Plugins > Activities > Panda Video*.
+* Enter your Panda Video **API Key**.
