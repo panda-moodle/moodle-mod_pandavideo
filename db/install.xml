@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/pandavideo/db" VERSION="20230406" COMMENT="XMLDB file for pandavideo module."
+<XMLDB PATH="mod/pandavideo/db" VERSION="20230406" COMMENT="XMLDB file for panda video module."
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
     <TABLES>
-        <TABLE NAME="pandavideo" COMMENT="Each record is a pandavideo resource.">
+        <TABLE NAME="pandavideo" COMMENT="Each record is a panda video resource.">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
@@ -22,7 +22,7 @@
                 <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
             </INDEXES>
         </TABLE>
-        <TABLE NAME="pandavideo_view" COMMENT="Save student Video views.">
+        <TABLE NAME="pandavideo_view" COMMENT="Save student panda video views.">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="cm_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
