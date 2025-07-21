@@ -80,9 +80,7 @@ $config = get_config("pandavideo");
 $pandavideoview = pandavideo_view::create($cm->id);
 
 try {
-
-   $player = repository::getplayer($pandavideo->pandaurl, $pandavideoview);
-
+    $player = repository::getplayer($pandavideo->pandaurl, $pandavideoview);
 
     if (!isset($config->panda_token[10])) {
         $pandavideo = repository::oembed($pandavideo->pandaurl);
