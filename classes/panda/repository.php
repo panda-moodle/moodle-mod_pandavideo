@@ -169,8 +169,8 @@ class repository {
     private static function http_get($endpoint, $baseurl) {
         $config = get_config("pandavideo");
 
-        if (!isset($config->panda_token[10])) {
-            throw new Exception("<h2>Token is missing!</h2>" . get_string("token_desc", "mod_pandavideo"));
+        if (!isset($config->panda_token[20])) {
+            throw new Exception("Token is missing: " . get_string("token_desc", "mod_pandavideo"));
         }
 
         $url = self::$baseurl . $endpoint;
@@ -225,7 +225,7 @@ class repository {
 
         $config = get_config("pandavideo");
 
-        if (!isset($config->panda_token[10])) {
+        if (!isset($config->panda_token[20])) {
             try {
                 $pandavideo = self::oembed($pandaurl);
             } catch (Exception) {

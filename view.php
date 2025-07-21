@@ -82,7 +82,7 @@ $pandavideoview = pandavideo_view::create($cm->id);
 try {
     $player = repository::getplayer($pandavideo->pandaurl, $pandavideoview);
 
-    if (!isset($config->panda_token[10])) {
+    if (!isset($config->panda_token[20])) {
         $pandavideo = repository::oembed($pandavideo->pandaurl);
         $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
     } else {
