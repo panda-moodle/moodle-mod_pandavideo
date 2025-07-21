@@ -24,7 +24,6 @@
 
 namespace mod_pandavideo\panda;
 
-use core\exception\moodle_exception;
 use Exception;
 use stdClass;
 
@@ -57,7 +56,7 @@ class repository {
     /**
      * oEmbed function
      *
-     * @param $videoid
+     * @param $pandaurl
      * @return mixed
      * @throws Exception
      */
@@ -78,7 +77,7 @@ class repository {
      * @param $page
      * @param $limit
      * @param $title
-     * @return array
+     * @return object
      * @throws Exception
      */
     public static function get_videos($page = 0, $limit = 100, $title = "") {
@@ -103,9 +102,21 @@ class repository {
     }
 
     /**
+     * get_folders
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public static function get_folders() {
+        $endpoint = "/folders";
+        $response = self::http_get($endpoint, self::$baseurl);
+        return $response;
+    }
+
+    /**
      * Get video properties
      *
-     * @param string $videoid
+     * @param string $pandaurl
      * @return stdClass
      * @throws Exception
      */
@@ -189,15 +200,15 @@ class repository {
             case 200:
                 return json_decode($body);
             case 400:
-                throw new Exception("Bad request. Check the provided parameters.");
+                throw new Exception("Panda error 400: Bad request. Check the provided parameters.");
             case 401:
-                throw new Exception("Unauthorized. Authentication failed or not provided.");
+                throw new Exception("Panda error 401: Unauthorized. Authentication failed or not provided.");
             case 404:
-                throw new Exception("Not found. Videos or the API were not found.");
+                throw new Exception("Panda error 404: Not found. Videos or the API were not found.");
             case 500:
-                throw new Exception("Internal server error. Please try again later.");
+                throw new Exception("Panda error 500: Internal server error. Please try again later.");
             default:
-                throw new Exception("Unexpected error. HTTP code: {$status}");
+                throw new Exception("Panda error {$status}: Unexpected error.");
         }
     }
 
@@ -217,14 +228,14 @@ class repository {
         if (!isset($config->panda_token[10])) {
             try {
                 $pandavideo = self::oembed($pandaurl);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 return null;
             }
             $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
         } else {
             try {
                 $pandavideo = self::get_video_properties($pandaurl);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 return null;
             }
         }
