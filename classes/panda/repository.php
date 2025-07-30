@@ -24,6 +24,7 @@
 
 namespace mod_pandavideo\panda;
 
+use curl;
 use Exception;
 use stdClass;
 
@@ -175,27 +176,20 @@ class repository {
 
         $url = self::$baseurl . $endpoint;
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "accept: application/json",
-            "Authorization: {$config->panda_token}",
+        $curl = new curl();
+        $curl->setopt([
+            CURLOPT_HTTPHEADER => [
+                "accept: application/json",
+                "Authorization: {$config->panda_token}",
+            ],
         ]);
+        $body = $curl->get($url);
 
-        $response = curl_exec($ch);
-        if ($response === false) {
-            curl_close($ch);
+        if($curl->error){
             throw new Exception("Unexpected error.");
         }
 
-        $headersize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $body = substr($response, $headersize);
-
-        curl_close($ch);
-
+        $status = $curl->info[CURLINFO_HTTP_CODE];
         switch ($status) {
             case 200:
                 return json_decode($body);
