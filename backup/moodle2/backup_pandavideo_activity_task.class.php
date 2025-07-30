@@ -62,13 +62,14 @@ class backup_pandavideo_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
+
         // Link to the list of pandavideos.
         $search = '/(' . $base . '\/mod\/pandavideo\/index.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@pandavideoINDEX*$2@$', $content);
+        $content = preg_replace($search, '$@PANDAVIDEOINDEX*$2@$', $content);
 
         // Link to pandavideo view by moduleid.
         $search = '/(' . $base . '\/mod\/pandavideo\/view.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@pandavideoVIEWBYID*$2@$', $content);
+        $content = preg_replace($search, '$@PANDAVIDEOVIEWBYID*$2@$', $content);
 
         return $content;
     }
