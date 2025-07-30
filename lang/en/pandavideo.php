@@ -23,6 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['cachedef_pandavideo_api_get'] = 'Cache API';
 $string['completiondetail:completionpercent'] = 'Must watch {$a}% of the video';
 $string['completionpercent'] = 'Required Percentage';
 $string['completionpercent_desc'] = 'Required {$a}%';
