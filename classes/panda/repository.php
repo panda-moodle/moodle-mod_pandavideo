@@ -185,7 +185,7 @@ class repository {
         ]);
         $body = $curl->get($url);
 
-        if($curl->error){
+        if ($curl->error) {
             throw new Exception("Unexpected error.");
         }
 
@@ -223,14 +223,14 @@ class repository {
             try {
                 $pandavideo = self::oembed($pandaurl);
             } catch (Exception) {
-                return null;
+                return "oEmbed Error";
             }
             $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
         } else {
             try {
                 $pandavideo = self::get_video_properties($pandaurl);
             } catch (Exception) {
-                return null;
+                return "Video properties Error";
             }
         }
 
