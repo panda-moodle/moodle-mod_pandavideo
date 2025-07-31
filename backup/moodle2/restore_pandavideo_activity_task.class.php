@@ -73,7 +73,6 @@ class restore_pandavideo_activity_task extends restore_activity_task {
     public static function define_decode_rules() {
         $rules = [];
 
-
         $rules[] = new restore_decode_rule('PANDAVIDEOVIEWBYID', '/mod/pandavideo/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('PANDAVIDEOINDEX', '/mod/pandavideo/index.php?id=$1', 'course');
 
