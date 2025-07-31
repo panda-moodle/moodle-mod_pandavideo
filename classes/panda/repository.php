@@ -68,7 +68,7 @@ class repository {
         }
         $dashboard = urlencode("https://dashboard.pandavideo.com.br/videos/{$videoid}");
         $endpoint = "/oembed?url={$dashboard}";
-        $response = self::http_get($endpoint, self::$baseurl);
+        $response = self::http_get($endpoint, self::$baseurl, true);
         return $response;
     }
 
@@ -128,7 +128,7 @@ class repository {
         }
 
         $endpoint = "/videos/{$videoid}";
-        $response = self::http_get($endpoint, self::$baseurl);
+        $response = self::http_get($endpoint, self::$baseurl, true);
         return $response;
     }
 
@@ -141,7 +141,7 @@ class repository {
      */
     public static function get_analytics_from_video($videoid) {
         $endpoint = "/general/{$videoid}";
-        $response = self::http_get($endpoint, self::$basedataurl);
+        $response = self::http_get($endpoint, self::$basedataurl, true);
         return $response;
     }
 
@@ -156,7 +156,7 @@ class repository {
      */
     public static function get_bandwidth_by_video($videoid, $startdate, $enddate) {
         $endpoint = "/analytics/traffic";
-        $response = self::http_get($endpoint, self::$baseurl);
+        $response = self::http_get($endpoint, self::$baseurl, true);
         return $response;
     }
 
@@ -164,45 +164,56 @@ class repository {
      * http_get
      *
      * @param string $endpoint
-     *
+     * @param $baseurl
+     * @param bool $savecache
+     * @return mixed
      * @throws Exception
      */
-    private static function http_get($endpoint, $baseurl) {
-        $config = get_config("pandavideo");
+    private static function http_get($endpoint, $baseurl, $savecache = false) {
+        $cache = \cache::make("mod_pandavideo", "css_cache");
+        $cachekey = "mod_pandavideo_{$endpoint}_{$baseurl}";
+        if ($savecache && $cache->has($cachekey)) {
+            return json_decode($cache->get($cachekey));
+        } else {
+            $config = get_config("pandavideo");
 
-        if (!isset($config->panda_token[20])) {
-            throw new Exception("Token is missing: " . get_string("token_desc", "mod_pandavideo"));
-        }
+            if (!isset($config->panda_token[20])) {
+                throw new Exception("Token is missing: " . get_string("token_desc", "mod_pandavideo"));
+            }
 
-        $url = self::$baseurl . $endpoint;
+            $url = self::$baseurl . $endpoint;
 
-        $curl = new curl();
-        $curl->setopt([
-            "CURLOPT_HTTPHEADER" => [
-                "accept: application/json",
-                "Authorization: {$config->panda_token}",
-            ],
-        ]);
-        $body = $curl->get($url);
+            $curl = new curl();
+            $curl->setopt([
+                "CURLOPT_HTTPHEADER" => [
+                    "accept: application/json",
+                    "Authorization: {$config->panda_token}",
+                ],
+            ]);
+            $body = $curl->get($url);
 
-        if ($curl->error) {
-            throw new Exception("Unexpected error.");
-        }
+            if ($curl->error) {
+                throw new Exception("Unexpected error.");
+            }
 
-        $status = $curl->info["http_code"];
-        switch ($status) {
-            case 200:
-                return json_decode($body);
-            case 400:
-                throw new Exception("Panda error 400: Bad request. Check the provided parameters.");
-            case 401:
-                throw new Exception("Panda error 401: Unauthorized. Authentication failed or not provided.");
-            case 404:
-                throw new Exception("Panda error 404: Not found. Videos or the API were not found.");
-            case 500:
-                throw new Exception("Panda error 500: Internal server error. Please try again later.");
-            default:
-                throw new Exception("Panda error {$status}: Unexpected error.");
+            $status = $curl->info["http_code"];
+            switch ($status) {
+                case 200:
+                    if ($savecache) {
+                        $cache->set($cachekey, $body);
+                    }
+                    return json_decode($body);
+                case 400:
+                    throw new Exception("Panda error 400: Bad request. Check the provided parameters.");
+                case 401:
+                    throw new Exception("Panda error 401: Unauthorized. Authentication failed or not provided.");
+                case 404:
+                    throw new Exception("Panda error 404: Not found. Videos or the API were not found.");
+                case 500:
+                    throw new Exception("Panda error 500: Internal server error. Please try again later.");
+                default:
+                    throw new Exception("Panda error {$status}: Unexpected error.");
+            }
         }
     }
 
@@ -227,11 +238,11 @@ class repository {
             }
             $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
         } else {
-            //            try {
-            $pandavideo = self::get_video_properties($pandaurl);
-            //            } catch (Exception $e) {
-            //                return "Video properties Error: {$e->getMessage()}";
-            //            }
+            try {
+                $pandavideo = self::get_video_properties($pandaurl);
+            } catch (Exception $e) {
+                return "Video properties Error: {$e->getMessage()}";
+            }
         }
 
         $mustachecontext = [
