@@ -170,7 +170,7 @@ class repository {
      * @throws Exception
      */
     private static function http_get($endpoint, $baseurl, $savecache = false) {
-        $cache = \cache::make("mod_pandavideo", "css_cache");
+        $cache = \cache::make("mod_pandavideo", "pandavideo_api_get");
         $cachekey = "mod_pandavideo_{$endpoint}_{$baseurl}";
         if ($savecache && $cache->has($cachekey)) {
             return json_decode($cache->get($cachekey));
