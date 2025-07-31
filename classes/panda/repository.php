@@ -178,7 +178,7 @@ class repository {
 
         $curl = new curl();
         $curl->setopt([
-            CURLOPT_HTTPHEADER => [
+            "CURLOPT_HTTPHEADER" => [
                 "accept: application/json",
                 "Authorization: {$config->panda_token}",
             ],
@@ -189,7 +189,7 @@ class repository {
             throw new Exception("Unexpected error.");
         }
 
-        $status = $curl->info[CURLINFO_HTTP_CODE];
+        $status = $curl->info["http_code"];
         switch ($status) {
             case 200:
                 return json_decode($body);
@@ -222,16 +222,16 @@ class repository {
         if (!isset($config->panda_token[20])) {
             try {
                 $pandavideo = self::oembed($pandaurl);
-            } catch (Exception) {
-                return "oEmbed Error";
+            } catch (Exception $e) {
+                return "oEmbed Error: {$e->getMessage()}";
             }
             $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
         } else {
-            try {
-                $pandavideo = self::get_video_properties($pandaurl);
-            } catch (Exception) {
-                return "Video properties Error";
-            }
+            //            try {
+            $pandavideo = self::get_video_properties($pandaurl);
+            //            } catch (Exception $e) {
+            //                return "Video properties Error: {$e->getMessage()}";
+            //            }
         }
 
         $mustachecontext = [
@@ -244,8 +244,7 @@ class repository {
         if ($pandavideoview) {
             $mustachecontext["pandavideoview_id"] = $pandavideoview->id;
             $mustachecontext["pandavideoview_currenttime"] = intval($pandavideoview->currenttime);
-            $mustachecontext["videomap_data"] =
-                json_decode($pandavideoview->videomap) ? $pandavideoview->videomap : "[]";
+            $mustachecontext["videomap_data"] = json_decode($pandavideoview->videomap) ? $pandavideoview->videomap : "[]";
         }
 
         return $OUTPUT->render_from_template("mod_pandavideo/embed", $mustachecontext);
