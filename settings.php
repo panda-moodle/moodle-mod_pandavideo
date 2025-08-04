@@ -28,10 +28,9 @@ defined('MOODLE_INTERNAL') || die;
 
 global $ADMIN, $CFG;
 if ($ADMIN->fulltree) {
-
     require_once("{$CFG->libdir}/resourcelib.php");
 
-    $setting= new admin_setting_configcheckbox(
+    $setting = new admin_setting_configcheckbox(
         "pandavideo/showvideomap",
         get_string("showvideomap", "mod_pandavideo"),
         get_string("showvideomap_desc", "mod_pandavideo"),
