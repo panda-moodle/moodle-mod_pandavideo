@@ -37,23 +37,7 @@ class repository {
     /** @var string */
     private static string $baseurl = "https://api-v2.pandavideo.com.br";
 
-    /** @var string */
-    private static string $basedataurl = "https://data.pandavideo.com";
-
-    /**
-     * get_video_id
-     *
-     * @param string $url
-     * @return string
-     */
-    private static function get_video_id($url) {
-        if (preg_match('/\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b/', $url, $matches)) {
-            return $matches[0];
-        }
-        return null;
-    }
-
-    /**
+     /**
      * oEmbed function
      *
      * @param $pandaurl
@@ -72,6 +56,19 @@ class repository {
     }
 
     /**
+     * get_video_id
+     *
+     * @param string $url
+     * @return string
+     */
+    private static function get_video_id($url) {
+        if (preg_match('/\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b/', $url, $matches)) {
+            return $matches[0];
+        }
+        return null;
+    }
+
+    /**
      * http_get
      *
      * @param string $endpoint
@@ -86,19 +83,11 @@ class repository {
         if ($savecache && $cache->has($cachekey)) {
             return json_decode($cache->get($cachekey));
         } else {
-            $pandatoken = get_config("repository_pandavideo", "panda_token");
-            if (!isset($pandatoken[20])) {
-                throw new Exception("Token is missing: " . get_string("token_desc", "mod_pandavideo"));
-            }
-
             $url = self::$baseurl . $endpoint;
 
             $curl = new curl();
             $curl->setopt([
-                "CURLOPT_HTTPHEADER" => [
-                    "accept: application/json",
-                    "Authorization: {$pandatoken}",
-                ],
+                "CURLOPT_HTTPHEADER" => ["accept: application/json"],
             ]);
             $body = $curl->get($url);
 
@@ -125,48 +114,5 @@ class repository {
                     throw new Exception("Panda error {$status}: Unexpected error.");
             }
         }
-    }
-
-    /**
-     * getplayer
-     *
-     * @param string $pandaurl
-     * @param object $pandavideoview
-     * @return string
-     * @throws Exception
-     */
-    public static function getplayer(string $pandaurl, $pandavideoview = null) {
-        global $OUTPUT;
-
-        $pandatoken = get_config("repository_pandavideo", "panda_token");
-        if (!isset($pandatoken[20])) {
-            try {
-                $pandavideo = self::oembed($pandaurl);
-            } catch (Exception $e) {
-                return "oEmbed Error: {$e->getMessage()}";
-            }
-            $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
-        } else {
-            try {
-                $pandavideo = self::get_video_properties($pandaurl);
-            } catch (Exception $e) {
-                return "Video properties Error: {$e->getMessage()}";
-            }
-        }
-
-        $mustachecontext = [
-            "video_player" => $pandavideo->video_player,
-            "pandavideoview_id" => 0,
-            "ratio" => max(($pandavideo->height / $pandavideo->width) * 100, 20),
-            "showvideomap" => false,
-            "videomap_data" => "[]",
-        ];
-        if ($pandavideoview) {
-            $mustachecontext["pandavideoview_id"] = $pandavideoview->id;
-            $mustachecontext["pandavideoview_currenttime"] = intval($pandavideoview->currenttime);
-            $mustachecontext["videomap_data"] = json_decode($pandavideoview->videomap) ? $pandavideoview->videomap : "[]";
-        }
-
-        return $OUTPUT->render_from_template("mod_pandavideo/embed", $mustachecontext);
     }
 }
