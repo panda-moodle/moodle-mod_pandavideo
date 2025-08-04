@@ -31,14 +31,10 @@ if ($ADMIN->fulltree) {
 
     require_once("{$CFG->libdir}/resourcelib.php");
 
-    $title = get_string("token", "mod_pandavideo");
-    $description = get_string("token_desc", "mod_pandavideo");
-    $setting = new admin_setting_configtext("pandavideo/panda_token",
-        $title, $description, "panda-xxxxxxxx", PARAM_TEXT);
+    $setting= new admin_setting_configcheckbox(
+        "pandavideo/showvideomap",
+        get_string("showvideomap", "mod_pandavideo"),
+        get_string("showvideomap_desc", "mod_pandavideo"),
+        1);
     $settings->add($setting);
-
-    $title = get_string("showvideomap", "mod_pandavideo");
-    $description = get_string("showvideomap_desc", "mod_pandavideo");
-    $settings->add(new admin_setting_configcheckbox("pandavideo/showvideomap",
-        $title, $description, 1));
 }

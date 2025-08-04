@@ -26,7 +26,6 @@ namespace mod_pandavideo\panda;
 
 use curl;
 use Exception;
-use stdClass;
 
 /**
  * Class Panda repository
@@ -47,7 +46,7 @@ class repository {
      * @param string $url
      * @return string
      */
-    public static function get_video_id($url) {
+    private static function get_video_id($url) {
         if (preg_match('/\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b/', $url, $matches)) {
             return $matches[0];
         }
@@ -73,94 +72,6 @@ class repository {
     }
 
     /**
-     * List videos
-     *
-     * @param $page
-     * @param $limit
-     * @param $title
-     * @return object
-     * @throws Exception
-     */
-    public static function get_videos($page = 0, $limit = 100, $title = "") {
-        $params = [];
-        if ($page) {
-            $params[] = "page={$page}";
-        }
-        if ($limit) {
-            $params[] = "limit={$limit}";
-        }
-        if ($title) {
-            $params[] = "title=" . urlencode($title);
-        }
-        if ($params) {
-            $endpoint = "/videos?" . implode("&", $params);
-        } else {
-            $endpoint = "/videos";
-        }
-
-        $response = self::http_get($endpoint, self::$baseurl);
-        return $response;
-    }
-
-    /**
-     * get_folders
-     *
-     * @return mixed
-     * @throws Exception
-     */
-    public static function get_folders() {
-        $endpoint = "/folders";
-        $response = self::http_get($endpoint, self::$baseurl);
-        return $response;
-    }
-
-    /**
-     * Get video properties
-     *
-     * @param string $pandaurl
-     * @return stdClass
-     * @throws Exception
-     */
-    public static function get_video_properties($pandaurl) {
-        $videoid = self::get_video_id($pandaurl);
-        if (!$videoid) {
-            throw new Exception("VideoId not found");
-        }
-
-        $endpoint = "/videos/{$videoid}";
-        $response = self::http_get($endpoint, self::$baseurl, true);
-        return $response;
-    }
-
-    /**
-     * Get analytics from video
-     *
-     * @param $videoid
-     * @return mixed
-     * @throws Exception
-     */
-    public static function get_analytics_from_video($videoid) {
-        $endpoint = "/general/{$videoid}";
-        $response = self::http_get($endpoint, self::$basedataurl, true);
-        return $response;
-    }
-
-    /**
-     * Get Bandwidth by Video
-     *
-     * @param $videoid
-     * @param $startdate
-     * @param $enddate
-     * @return mixed
-     * @throws Exception
-     */
-    public static function get_bandwidth_by_video($videoid, $startdate, $enddate) {
-        $endpoint = "/analytics/traffic";
-        $response = self::http_get($endpoint, self::$baseurl, true);
-        return $response;
-    }
-
-    /**
      * http_get
      *
      * @param string $endpoint
@@ -175,9 +86,8 @@ class repository {
         if ($savecache && $cache->has($cachekey)) {
             return json_decode($cache->get($cachekey));
         } else {
-            $config = get_config("pandavideo");
-
-            if (!isset($config->panda_token[20])) {
+            $pandatoken = get_config("repository_pandavideo", "panda_token");
+            if (!isset($pandatoken[20])) {
                 throw new Exception("Token is missing: " . get_string("token_desc", "mod_pandavideo"));
             }
 
@@ -187,7 +97,7 @@ class repository {
             $curl->setopt([
                 "CURLOPT_HTTPHEADER" => [
                     "accept: application/json",
-                    "Authorization: {$config->panda_token}",
+                    "Authorization: {$pandatoken}",
                 ],
             ]);
             $body = $curl->get($url);
@@ -228,9 +138,8 @@ class repository {
     public static function getplayer(string $pandaurl, $pandavideoview = null) {
         global $OUTPUT;
 
-        $config = get_config("pandavideo");
-
-        if (!isset($config->panda_token[20])) {
+        $pandatoken = get_config("repository_pandavideo", "panda_token");
+        if (!isset($pandatoken[20])) {
             try {
                 $pandavideo = self::oembed($pandaurl);
             } catch (Exception $e) {
