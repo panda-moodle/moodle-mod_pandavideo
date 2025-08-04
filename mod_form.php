@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_supervideo\form\supervideo_filepicker;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once("{$CFG->dirroot}/course/moodleform_mod.php");
@@ -43,7 +45,14 @@ class mod_pandavideo_mod_form extends moodleform_mod {
      * @throws coding_exception
      */
     public function definition() {
-        global $CFG, $PAGE, $COURSE;
+        global $CFG, $COURSE;
+
+        // Register Element Type supervideo_filepicker.
+        MoodleQuickForm::registerElementType(
+            "supervideo_filepicker",
+            "{$CFG->dirroot}/mod/supervideo/classes/form/supervideo_filepicker.php",
+            supervideo_filepicker::class
+        );
 
         $mform = $this->_form;
         $mform->updateAttributes(["enctype" => "multipart/form-data"]);
@@ -55,14 +64,13 @@ class mod_pandavideo_mod_form extends moodleform_mod {
         $mform->addRule("name", null, "required", null, "client");
         $mform->addRule("name", get_string("maximumchars", "", 255), "maxlength", 255, "client");
 
-        // Digite a URL ou ID.
-        $mform->addElement(
-            "text",
-            "pandaurl",
-            get_string("pandaurl", "mod_pandavideo"),
-            ["size" => 60],
-            []
-        );
+        $filemanageroptions = [
+            "accepted_types" => ["video/panda"],
+            "maxbytes" => -1,
+            "return_types" => 1,
+        ];
+        $title = get_string("pandaurl", "mod_pandavideo");
+        $mform->addElement("supervideo_filepicker", "pandaurl", $title, null, $filemanageroptions);
         $mform->setType("pandaurl", PARAM_TEXT);
         $mform->addRule("pandaurl", null, "required", null, "client");
         $mform->addHelpButton("pandaurl", "pandaurl", "mod_pandavideo");
