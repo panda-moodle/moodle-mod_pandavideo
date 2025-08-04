@@ -81,14 +81,13 @@ $config = get_config("pandavideo");
 $pandavideoview = pandavideo_view::create($cm->id);
 
 try {
-    $player = repository::getplayer($pandavideo->pandaurl, $pandavideoview);
-
     $pandatoken = get_config("repository_pandavideo", "panda_token");
-    if (!isset($pandatoken[20])) {
+    $pandafile = "{$CFG->dirroot}/repository/pandavideo/classes/pandarepository.php";
+    if (isset($pandatoken[20]) && file_exists($pandafile)) {
+        $pandavideo = pandarepository::get_video_properties($pandavideo->pandaurl);
+    } else {
         $pandavideo = repository::oembed($pandavideo->pandaurl);
         $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
-    } else {
-        $pandavideo = pandarepository::get_video_properties($pandavideo->pandaurl);
     }
 
     echo $OUTPUT->render_from_template("mod_pandavideo/embed", [
