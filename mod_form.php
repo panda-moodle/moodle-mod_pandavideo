@@ -65,7 +65,7 @@ class mod_pandavideo_mod_form extends moodleform_mod {
         $mform->addRule("name", get_string("maximumchars", "", 255), "maxlength", 255, "client");
 
         $filemanageroptions = [
-            "accepted_types" => ["video/panda"],
+            "accepted_types" => ["video/pandavideo"],
             "maxbytes" => -1,
             "return_types" => 1,
         ];
