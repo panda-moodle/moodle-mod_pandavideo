@@ -26,7 +26,6 @@
 use mod_pandavideo\analytics\pandavideo_view;
 use mod_pandavideo\panda\repository;
 use mod_pandavideo\event\course_module_viewed;
-use repository_pandavideo\pandarepository;
 
 require_once('../../config.php');
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
@@ -81,14 +80,10 @@ $config = get_config("pandavideo");
 $pandavideoview = pandavideo_view::create($cm->id);
 
 try {
-    $pandatoken = get_config("repository_pandavideo", "panda_token");
+    $pandatoken = get_config("pandavideo", "panda_token");
     $pandafile = "{$CFG->dirroot}/repository/pandavideo/classes/pandarepository.php";
-    if (isset($pandatoken[20]) && file_exists($pandafile)) {
-        $pandavideo = pandarepository::get_video_properties($pandavideo->pandaurl);
-    } else {
-        $pandavideo = repository::oembed($pandavideo->pandaurl);
-        $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
-    }
+    $pandavideo = repository::oembed($pandavideo->pandaurl);
+    $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
 
     echo $OUTPUT->render_from_template("mod_pandavideo/embed", [
         "video_player" => $pandavideo->video_player,
