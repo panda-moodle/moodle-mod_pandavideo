@@ -45,14 +45,21 @@ class repository {
      * @throws Exception
      */
     public static function oembed($pandaurl) {
-        $videoid = self::get_video_id($pandaurl);
-        if (!$videoid) {
-            throw new Exception("VideoId not found");
+        if (preg_match('#^https://([^/]+)/embed/\?v=([a-f0-9-]+)$#i', $pandaurl, $matches)) {
+            $dashboard = urlencode($pandaurl);
+            $endpoint = "/oembed?url={$dashboard}";
+            $response = self::http_get($endpoint, self::$baseurl, true);
+            return $response;
+        } else {
+            $videoid = self::get_video_id($pandaurl);
+            if (!$videoid) {
+                throw new Exception("VideoId not found");
+            }
+            $dashboard = urlencode("https://dashboard.pandavideo.com.br/videos/{$videoid}");
+            $endpoint = "/oembed?url={$dashboard}";
+            $response = self::http_get($endpoint, self::$baseurl, true);
+            return $response;
         }
-        $dashboard = urlencode("https://dashboard.pandavideo.com.br/videos/{$videoid}");
-        $endpoint = "/oembed?url={$dashboard}";
-        $response = self::http_get($endpoint, self::$baseurl, true);
-        return $response;
     }
 
     /**
