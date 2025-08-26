@@ -72,7 +72,6 @@ class mod_pandavideo_mod_form extends moodleform_mod {
         $title = get_string("pandaurl", "mod_pandavideo");
         $mform->addElement("supervideo_filepicker", "pandaurl", $title, null, $filemanageroptions);
         $mform->setType("pandaurl", PARAM_TEXT);
-        $mform->addRule("pandaurl", null, "required", null, "client");
         $mform->addHelpButton("pandaurl", "pandaurl", "mod_pandavideo");
 
         // Adding the standard "intro" and "introformat" fields.
@@ -208,7 +207,6 @@ class mod_pandavideo_mod_form extends moodleform_mod {
      * Function completion_rule_enabled
      *
      * @param array $data
-     *
      * @return bool
      */
     public function completion_rule_enabled($data) {
@@ -220,7 +218,6 @@ class mod_pandavideo_mod_form extends moodleform_mod {
      *
      * @param $data
      * @param $files
-     *
      * @return array
      * @throws coding_exception
      */
