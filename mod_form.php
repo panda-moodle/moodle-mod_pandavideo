@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_supervideo\form\supervideo_filepicker;
+use mod_pandavideo_filepicker\form\pandavideo_filepicker;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -47,11 +47,11 @@ class mod_pandavideo_mod_form extends moodleform_mod {
     public function definition() {
         global $CFG, $COURSE;
 
-        // Register Element Type supervideo_filepicker.
+        // Register Element Type pandavideo_filepicker.
         MoodleQuickForm::registerElementType(
-            "supervideo_filepicker",
-            "{$CFG->dirroot}/mod/supervideo/classes/form/supervideo_filepicker.php",
-            supervideo_filepicker::class
+            "pandavideo_filepicker",
+            "{$CFG->dirroot}/mod/pandavideo_filepicker/classes/form/pandavideo_filepicker.php",
+            pandavideo_filepicker::class
         );
 
         $mform = $this->_form;
@@ -70,7 +70,7 @@ class mod_pandavideo_mod_form extends moodleform_mod {
             "return_types" => 1,
         ];
         $title = get_string("pandaurl", "mod_pandavideo");
-        $mform->addElement("supervideo_filepicker", "pandaurl", $title, null, $filemanageroptions);
+        $mform->addElement("pandavideo_filepicker", "pandaurl", $title, null, $filemanageroptions);
         $mform->setType("pandaurl", PARAM_TEXT);
         $mform->addHelpButton("pandaurl", "pandaurl", "mod_pandavideo");
 
