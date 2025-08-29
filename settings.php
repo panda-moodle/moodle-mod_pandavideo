@@ -38,7 +38,7 @@ if ($ADMIN->fulltree) {
     $settings->add($setting);
 
     // Panda Token.
-    $setting = new admin_setting_heading("pandavideo/token", 
+    $setting = new admin_setting_heading("pandavideo/token",
         get_string("settings_token_title", "mod_pandavideo"), "");
     $settings->add($setting);
 
