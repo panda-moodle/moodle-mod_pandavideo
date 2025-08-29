@@ -82,6 +82,7 @@ $string['settings_panda_tokendesc'] = 'Enter the authentication token provided b
 $string['settings_safety_desc'] = 'Select which user field will be used for the DRM Watermark';
 $string['settings_safety_email'] = 'User email';
 $string['settings_safety_id'] = 'User ID';
+$string['settings_safety_idnumber'] = 'User ID number';
 $string['settings_safety_title'] = 'DRM Watermark security field';
 $string['settings_showvideomap'] = 'Show Map';
 $string['settings_showvideomap_desc'] = 'If checked, show the map after the video player!';
