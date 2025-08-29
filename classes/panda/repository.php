@@ -64,6 +64,41 @@ class repository {
     }
 
     /**
+     * Function get_drm_watermark
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function get_drm_watermark() {
+        global $USER;
+        $drmgroupid = get_config("pandavideo", "drm_group_id");
+        $drmsecret = get_config("pandavideo", "drm_secret");
+
+        if (isset($drmgroupid[3]) && isset($drmsecret[3])) {
+            $safetytext =  "Moodle ID: {$USER->id}";
+            switch (get_config("pandavideo", "panda_token")) {
+                case "email":
+                    $safetytext = get_string("email") . ": {$USER->email}";
+                    break;
+                case "idnumber":
+                    $safetytext = get_string("idnumber") . ": {$USER->idnumber}";
+                    break;
+            }
+
+            $jwtobj = [
+                "drm_group_id" => $drmgroupid,
+                "string1" => get_string("drm_licensedto", "pandavideo"),
+                "string2" => get_string("drm_username", "pandavideo", fullname($USER)),
+                "string3" => $safetytext,
+                'exp' => time() + 86400, // 24 horas em segundos.
+            ];
+            $watermark = \Firebase\JWT\JWT::encode($jwtobj, $drmsecret, 'HS256');
+            return "&watermark={$watermark}";
+        }
+        return "";
+    }
+
+    /**
      * get_video_id
      *
      * @param string $url

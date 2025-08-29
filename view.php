@@ -84,6 +84,7 @@ try {
     $pandafile = "{$CFG->dirroot}/repository/pandavideo/classes/pandarepository.php";
     $pandavideo = repository::oembed($pandavideo->pandaurl);
     $pandavideo->video_player = preg_replace('/.*src="(.*?)".*/', "$1", $pandavideo->html);
+    $pandavideo->video_player .= repository::get_drm_watermark();
 
     echo $OUTPUT->render_from_template("mod_pandavideo/embed", [
         "video_player" => $pandavideo->video_player,
