@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2025082600;
+$plugin->version = 2025082900;
 $plugin->requires = 2021041900;
-$plugin->release = "1.0.8";
+$plugin->release = "1.0.9";
 $plugin->component = "mod_pandavideo";
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [];
