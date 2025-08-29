@@ -18,7 +18,8 @@
  * repository for Panda.
  *
  * @package   mod_pandavideo
- * @copyright 2025 Eduardo kraus (http://eduardokraus.com)
+ * @copyright 2025 Panda Video {@link https://pandavideo.com.br}
+ * @author    2025 Eduardo Kraus {@link https://eduardokraus.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
