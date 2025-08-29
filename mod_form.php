@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_pandavideo_filepicker\form\pandavideo_filepicker;
+use mod_pandavideo\form\pandavideo_filepicker;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -50,7 +50,7 @@ class mod_pandavideo_mod_form extends moodleform_mod {
         // Register Element Type pandavideo_filepicker.
         MoodleQuickForm::registerElementType(
             "pandavideo_filepicker",
-            "{$CFG->dirroot}/mod/pandavideo_filepicker/classes/form/pandavideo_filepicker.php",
+            "{$CFG->dirroot}/mod/pandavideo/classes/form/pandavideo_filepicker.php",
             pandavideo_filepicker::class
         );
 
