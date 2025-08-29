@@ -68,11 +68,11 @@ if ($ADMIN->fulltree) {
         "", PARAM_TEXT);
     $settings->add($setting);
 
-    $securityfield = array(
+    $securityfield = [
         "id" => get_string("settings_safety_id", "pandavideo"),
         "email" => get_string("settings_safety_email", "pandavideo"),
         "idnumber" => get_string("settings_safety_email", "pandavideo"),
-    );
+    ];
     $settings->add(new admin_setting_configselect("pandavideo/safety",
         get_string("settings_safety_title", "pandavideo"),
         get_string("settings_safety_desc",  "pandavideo"), "id",
