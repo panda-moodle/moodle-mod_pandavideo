@@ -41,7 +41,7 @@ $user = $DB->get_record("user", ["id" => $externaltoken->userid]);
 
 if ($user) {
     manager::login_user($user);
-    require_course_login($course);
+    require_course_login($course, false, null, false, true);
 } else {
     redirect(new moodle_url("/mod/pandavideo/view.php", ["id" => $id]));
 }
