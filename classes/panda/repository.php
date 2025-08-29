@@ -76,7 +76,7 @@ class repository {
 
         if (isset($drmgroupid[3]) && isset($drmsecret[3])) {
             $safetytext = "Moodle ID: {$USER->id}";
-            switch (get_config("pandavideo", "panda_token")) {
+            switch (get_config("pandavideo", "safety")) {
                 case "email":
                     $safetytext = get_string("email") . ": {$USER->email}";
                     break;
