@@ -24,7 +24,7 @@
       "pandavideoview_currenttime": 432,
       "ratio": 56,
       "showvideomap": true,
-      "videomap_data": "[1,0,0,0,0]"
+      "videomap_data": "[1, 0, 0, 0, 0]"
     }
 }}
 
@@ -147,6 +147,8 @@
                 if (percent >= 0) {
                     $("#user-videomap-view span").html(`${percent}%`);
                 }
+
+                return 1;
             },
 
             _progresscreate: function(duration) {
@@ -199,7 +201,6 @@
                         }
                     }
                 } catch (e) {
-                    console.error(e);
                 }
             },
 
