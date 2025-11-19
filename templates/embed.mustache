@@ -55,164 +55,164 @@
     {{/showvideomap}}
 
     {{#js}}
-    require(["jquery", "core/ajax", "core/notification"], function($, Ajax, Notification) {
-        let pandaplayer = {
-            init: function() {
-                pandaplayer._viewid = {{pandavideoview_id}};
-                let currenttime = {{pandavideoview_currenttime}};
+        require(["jquery", "core/ajax", "core/notification"], function($, Ajax, Notification) {
+            let pandaplayer = {
+                init: function() {
+                    pandaplayer._viewid = {{pandavideoview_id}};
+                    let currenttime = {{pandavideoview_currenttime}};
 
-                $("#pandavideo-embed-area-{{{uniqid}}}").show();
+                    $("#pandavideo-embed-area-{{{uniqid}}}").show();
 
-                let duration = false;
-                window.addEventListener("message", function(event) {
-                    const data = event.data;
+                    let duration = false;
+                    window.addEventListener("message", function(event) {
+                        const data = event.data;
 
-                    if (data.message === "panda_allData") {
-                        duration = data.playerData.duration;
-                        if (currenttime && !pandaplayer._sendsetcurrenttime) {
-                            pandaplayer._setcurrenttime(currenttime);
-                            pandaplayer._sendsetcurrenttime = true;
+                        if (data.message === "panda_allData") {
+                            duration = data.playerData.duration;
+                            if (currenttime && !pandaplayer._sendsetcurrenttime) {
+                                pandaplayer._setcurrenttime(currenttime);
+                                pandaplayer._sendsetcurrenttime = true;
+                            }
+                        } else if (data.message === "panda_timeupdate") {
+                            if (duration) {
+                                pandaplayer._saveprogress(data.currentTime, duration);
+                            }
                         }
-                    } else if (data.message === "panda_timeupdate") {
-                        if (duration) {
-                            pandaplayer._saveprogress(data.currentTime, duration);
-                        }
+                    }, false);
+                },
+
+                _lastposicaovideo: -1,
+                _lastpercent: -1,
+                _assistido: [],
+                _viewid: 0,
+                _progresslength: 100,
+                _sizenum: -1,
+                _saveprogress: function(currenttime, duration) {
+                    currenttime = Math.floor(currenttime);
+                    duration = Math.floor(duration);
+
+                    if (!duration) {
+                        return 0;
                     }
-                }, false);
-            },
-
-            _lastposicaovideo: -1,
-            _lastpercent: -1,
-            _assistido: [],
-            _viewid: 0,
-            _progresslength: 100,
-            _sizenum: -1,
-            _saveprogress: function(currenttime, duration) {
-                currenttime = Math.floor(currenttime);
-                duration = Math.floor(duration);
-
-                if (!duration) {
-                    return 0;
-                }
-                if (duration && pandaplayer._assistido.length == 0) {
-                    pandaplayer._progresscreate(duration);
-                }
-
-                let posicaovideo;
-                if (pandaplayer._progresslength < 100) {
-                    posicaovideo = currenttime;
-                } else {
-                    posicaovideo = parseInt(currenttime / duration * pandaplayer._progresslength);
-                }
-
-                if (pandaplayer._lastposicaovideo == posicaovideo) {
-                    return 0;
-                }
-                pandaplayer._lastposicaovideo = posicaovideo;
-
-                if (posicaovideo) {
-                    pandaplayer._assistido[posicaovideo] = 1;
-                }
-
-                let percent = 0;
-                for (let j = 1; j <= pandaplayer._progresslength; j++) {
-                    if (pandaplayer._assistido[j]) {
-                        percent++;
-                        $(`#videomap-visualization-${j}`).css({opacity: 1});
+                    if (duration && pandaplayer._assistido.length == 0) {
+                        pandaplayer._progresscreate(duration);
                     }
-                }
 
-                if (pandaplayer._progresslength < 100) {
-                    percent = Math.floor(percent / pandaplayer._progresslength * 100);
-                }
-
-                if (pandaplayer._lastpercent == percent) {
-                    return 0;
-                }
-                pandaplayer._lastpercent = percent;
-
-                if (currenttime) {
-                    Ajax.call([{
-                        methodname: "mod_pandavideo_external_progress_save",
-                        args: {
-                            viewid: pandaplayer._viewid,
-                            currenttime: parseInt(currenttime),
-                            duration: parseInt(duration),
-                            percent: parseInt(percent),
-                            videomap: JSON.stringify(pandaplayer._assistido)
-                        }
-                    }]);
-                }
-
-                if (percent >= 0) {
-                    $("#user-videomap-view span").html(`${percent}%`);
-                }
-
-                return 1;
-            },
-
-            _progresscreate: function(duration) {
-                let $videomap = $("#videomap-visualization .videomap");
-                if ($videomap.length) {
-                    if (Math.floor(duration) <= 100) {
-                        pandaplayer._progresslength = Math.floor(duration);
+                    let posicaovideo;
+                    if (pandaplayer._progresslength < 100) {
+                        posicaovideo = currenttime;
+                    } else {
+                        posicaovideo = parseInt(currenttime / duration * pandaplayer._progresslength);
                     }
-                    for (let i = 1; i <= pandaplayer._progresslength; i++) {
-                        pandaplayer._assistido[i] = 0;
 
-                        let $videomapitem = $(`<div id="videomap-visualization-${i}">`);
-                        $videomap.append($videomapitem);
-
-                        // Maps Click.
-                        let mapstitle = Math.floor(duration / pandaplayer._progresslength * i);
-
-                        let hours = Math.floor(mapstitle / 3600);
-                        let minutes = (Math.floor(mapstitle / 60)) % 60;
-                        let seconds = mapstitle % 60;
-
-                        let tempo = `${minutes}:${seconds}`;
-                        if (hours) {
-                            tempo = `${hours}:${minutes}:${seconds}`;
-                        }
-                        let $videomapclick = $("<div>")
-                                .attr("title", tempo)
-                                .attr("data-currenttime", mapstitle)
-                                .click(function() {
-                                    let currenttime = $(this).attr("data-currenttime");
-                                    pandaplayer._setcurrenttime(currenttime);
-                                });
-                        $("#videomap-visualization .click-area").append($videomapclick);
+                    if (pandaplayer._lastposicaovideo == posicaovideo) {
+                        return 0;
                     }
-                } else {
-                    if (Math.floor(duration) <= 100) {
-                        pandaplayer._progresslength = Math.floor(duration);
-                    }
-                    for (let i = 1; i <= pandaplayer._progresslength; i++) {
-                        pandaplayer._assistido[i] = 0;
-                    }
-                }
+                    pandaplayer._lastposicaovideo = posicaovideo;
 
-                try {
-                    let pandavideoviewmaps = {{{videomap_data}}};
-                    for (let k = 1; k <= pandaplayer._progresslength; k++) {
-                        if (typeof pandavideoviewmaps[k] != "undefined" && pandavideoviewmaps[k]) {
-                            pandaplayer._assistido[k] = 1;
-                            $(`#videomap-visualization-${k}`).css({opacity: 1});
+                    if (posicaovideo) {
+                        pandaplayer._assistido[posicaovideo] = 1;
+                    }
+
+                    let percent = 0;
+                    for (let j = 1; j <= pandaplayer._progresslength; j++) {
+                        if (pandaplayer._assistido[j]) {
+                            percent++;
+                            $(`#videomap-visualization-${j}`).css({opacity: 1});
                         }
                     }
-                } catch (err) {
-                    Notification.exception(err);
-                }
-            },
 
-            _setcurrenttime: function(currenttime) {
-                currenttime = parseInt(currenttime);
-                const iframe = document.getElementById("embed-panda-videos-{{{uniqid}}}").contentWindow;
-                var parameter = {type: "currentTime", parameter: currenttime};
-                iframe.postMessage(parameter);
-            }
-        };
-        pandaplayer.init();
-    });
+                    if (pandaplayer._progresslength < 100) {
+                        percent = Math.floor(percent / pandaplayer._progresslength * 100);
+                    }
+
+                    if (pandaplayer._lastpercent == percent) {
+                        return 0;
+                    }
+                    pandaplayer._lastpercent = percent;
+
+                    if (currenttime) {
+                        Ajax.call([{
+                            methodname: "mod_pandavideo_external_progress_save",
+                            args: {
+                                viewid: pandaplayer._viewid,
+                                currenttime: parseInt(currenttime),
+                                duration: parseInt(duration),
+                                percent: parseInt(percent),
+                                videomap: JSON.stringify(pandaplayer._assistido)
+                            }
+                        }]);
+                    }
+
+                    if (percent >= 0) {
+                        $("#user-videomap-view span").html(`${percent}%`);
+                    }
+
+                    return 1;
+                },
+
+                _progresscreate: function(duration) {
+                    let $videomap = $("#videomap-visualization .videomap");
+                    if ($videomap.length) {
+                        if (Math.floor(duration) <= 100) {
+                            pandaplayer._progresslength = Math.floor(duration);
+                        }
+                        for (let i = 1; i <= pandaplayer._progresslength; i++) {
+                            pandaplayer._assistido[i] = 0;
+
+                            let $videomapitem = $(`<div id="videomap-visualization-${i}">`);
+                            $videomap.append($videomapitem);
+
+                            // Maps Click.
+                            let mapstitle = Math.floor(duration / pandaplayer._progresslength * i);
+
+                            let hours = Math.floor(mapstitle / 3600);
+                            let minutes = (Math.floor(mapstitle / 60)) % 60;
+                            let seconds = mapstitle % 60;
+
+                            let tempo = `${minutes}:${seconds}`;
+                            if (hours) {
+                                tempo = `${hours}:${minutes}:${seconds}`;
+                            }
+                            let $videomapclick = $("<div>")
+                                    .attr("title", tempo)
+                                    .attr("data-currenttime", mapstitle)
+                                    .click(function() {
+                                        let currenttime = $(this).attr("data-currenttime");
+                                        pandaplayer._setcurrenttime(currenttime);
+                                    });
+                            $("#videomap-visualization .click-area").append($videomapclick);
+                        }
+                    } else {
+                        if (Math.floor(duration) <= 100) {
+                            pandaplayer._progresslength = Math.floor(duration);
+                        }
+                        for (let i = 1; i <= pandaplayer._progresslength; i++) {
+                            pandaplayer._assistido[i] = 0;
+                        }
+                    }
+
+                    try {
+                        let pandavideoviewmaps = {{{videomap_data}}};
+                        for (let k = 1; k <= pandaplayer._progresslength; k++) {
+                            if (typeof pandavideoviewmaps[k] != "undefined" && pandavideoviewmaps[k]) {
+                                pandaplayer._assistido[k] = 1;
+                                $(`#videomap-visualization-${k}`).css({opacity: 1});
+                            }
+                        }
+                    } catch (err) {
+                        Notification.exception(err);
+                    }
+                },
+
+                _setcurrenttime: function(currenttime) {
+                    currenttime = parseInt(currenttime);
+                    const iframe = document.getElementById("embed-panda-videos-{{{uniqid}}}").contentWindow;
+                    var parameter = {type: "currentTime", parameter: currenttime};
+                    iframe.postMessage(parameter);
+                }
+            };
+            pandaplayer.init();
+        });
     {{/js}}
 {{/pandavideoview_id}}
