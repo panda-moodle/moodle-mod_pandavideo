@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/mod/pandavideo/backup/moodle2/backup_pandavideo_s
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_pandavideo_activity_task extends backup_activity_task {
-
     /**
      * No specific settings for this activity
      */
