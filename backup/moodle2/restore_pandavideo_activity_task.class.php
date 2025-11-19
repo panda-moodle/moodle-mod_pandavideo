@@ -77,7 +77,6 @@ class restore_pandavideo_activity_task extends restore_activity_task {
         $rules[] = new restore_decode_rule('PANDAVIDEOINDEX', '/mod/pandavideo/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**
