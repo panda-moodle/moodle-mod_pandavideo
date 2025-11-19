@@ -176,10 +176,10 @@ class provider implements
             ];
             return $carry;
 
-        }, function ($cmid, $data) use ($user, $cmidstocmids) {
+        }, function($cmid, $data) use ($user, $cmidstocmids) {
             $context = context_module::instance($cmidstocmids[$cmid]);
             $contextdata = helper::get_context_data($context, $user);
-            $finaldata = (object)array_merge((array)$contextdata, ["messages" => $data]);
+            $finaldata = (object) array_merge((array) $contextdata, ["messages" => $data]);
             helper::export_context_files($context, $user);
             writer::with_context($context)->export_data([], $finaldata);
         });
