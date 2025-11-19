@@ -75,7 +75,7 @@ function pandavideo_supports($feature) {
  */
 function pandavideo_update_grades($pandavideo, $userid = 0, $nullifnone = true) {
     global $CFG;
-    require_once( "{$CFG->libdir}/gradelib.php");
+    require_once("{$CFG->libdir}/gradelib.php");
 
     if ($pandavideo->grade_approval) {
         if ($grades = pandavideo_get_user_grades($pandavideo, $userid)) {
