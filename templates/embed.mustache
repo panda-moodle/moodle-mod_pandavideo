@@ -55,7 +55,7 @@
     {{/showvideomap}}
 
     {{#js}}
-    require(["jquery", "core/ajax"], function($, Ajax) {
+    require(["jquery", "core/ajax", "core/notification"], function($, Ajax, Notification) {
         let pandaplayer = {
             init: function() {
                 pandaplayer._viewid = {{pandavideoview_id}};
@@ -201,6 +201,7 @@
                         }
                     }
                 } catch (e) {
+                    Notification.exception(err);
                 }
             },
 
