@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * phpcs:disable
+ *
  * The mod_pandavideo module does not store any data.
  *
  * @package   mod_pandavideo
