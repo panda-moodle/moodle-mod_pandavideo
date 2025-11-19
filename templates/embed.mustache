@@ -14,7 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-
 {{!
     @template mod_pandavideo/embed
 
@@ -41,7 +40,7 @@
 
 {{^pandavideoview_id}}
     {{#js}}
-    require(["jquery"], function ($) {
+    require(["jquery"], function($) {
         $("#pandavideo-embed-area-{{{uniqid}}}").show();
     });
     {{/js}}
@@ -56,16 +55,16 @@
     {{/showvideomap}}
 
     {{#js}}
-    require(["jquery", "core/ajax"], function ($, Ajax) {
+    require(["jquery", "core/ajax"], function($, Ajax) {
         let pandaplayer = {
-            init: function () {
+            init: function() {
                 pandaplayer._viewid = {{pandavideoview_id}};
                 let currenttime = {{pandavideoview_currenttime}};
 
                 $("#pandavideo-embed-area-{{{uniqid}}}").show();
 
                 let duration = false;
-                window.addEventListener("message", function (event) {
+                window.addEventListener("message", function(event) {
                     const data = event.data;
 
                     if (data.message === "panda_allData") {
@@ -88,7 +87,7 @@
             _viewid: 0,
             _progresslength: 100,
             _sizenum: -1,
-            _saveprogress: function (currenttime, duration) {
+            _saveprogress: function(currenttime, duration) {
                 currenttime = Math.floor(currenttime);
                 duration = Math.floor(duration);
 
@@ -107,7 +106,7 @@
                 }
 
                 if (pandaplayer._lastposicaovideo == posicaovideo) {
-                    return;
+                    return 0;
                 }
                 pandaplayer._lastposicaovideo = posicaovideo;
 
@@ -128,7 +127,7 @@
                 }
 
                 if (pandaplayer._lastpercent == percent) {
-                    return;
+                    return 0;
                 }
                 pandaplayer._lastpercent = percent;
 
@@ -150,7 +149,7 @@
                 }
             },
 
-            _progresscreate: function (duration) {
+            _progresscreate: function(duration) {
                 let $videomap = $("#videomap-visualization .videomap");
                 if ($videomap.length) {
                     if (Math.floor(duration) <= 100) {
@@ -176,7 +175,7 @@
                         let $videomapclick = $("<div>")
                                 .attr("title", tempo)
                                 .attr("data-currenttime", mapstitle)
-                                .click(function () {
+                                .click(function() {
                                     let currenttime = $(this).attr("data-currenttime");
                                     pandaplayer._setcurrenttime(currenttime);
                                 });
@@ -204,7 +203,7 @@
                 }
             },
 
-            _setcurrenttime: function (currenttime) {
+            _setcurrenttime: function(currenttime) {
                 currenttime = parseInt(currenttime);
                 const iframe = document.getElementById("embed-panda-videos-{{{uniqid}}}").contentWindow;
                 var parameter = {type: "currentTime", parameter: currenttime};
