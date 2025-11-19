@@ -75,7 +75,7 @@ if ($ADMIN->fulltree) {
     ];
     $settings->add(new admin_setting_configselect("pandavideo/safety",
         get_string("settings_safety_title", "pandavideo"),
-        get_string("settings_safety_desc",  "pandavideo"), "id",
+        get_string("settings_safety_desc", "pandavideo"), "id",
         $securityfield
     ));
 }
