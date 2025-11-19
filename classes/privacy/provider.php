@@ -42,11 +42,9 @@ use core_privacy\local\request\writer;
  *
  * @package mod_pandavideo\privacy
  */
-class provider implements
-    \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\core_userlist_provider,
-    \core_privacy\local\request\plugin\provider {
-
+class provider implements \core_privacy\local\metadata\provider,
+                          \core_privacy\local\request\core_userlist_provider,
+                          \core_privacy\local\request\plugin\provider {
     /**
      * Returns metadata.
      *
@@ -161,7 +159,7 @@ class provider implements
         $cmids = array_keys($cmidstocmids);
 
         // Export the messages.
-        list($insql, $inparams) = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
         $params = array_merge($inparams, ["user_id" => $userid]);
         $recordset = $DB->get_recordset_select("pandavideo_view", "cm_id $insql AND user_id = :user_id", $params, "timestamp, id");
         static::recordset_loop_and_export($recordset, "cm_id", [], function ($carry, $record) use ($user, $cmidstocmids) {
@@ -231,7 +229,7 @@ class provider implements
         $cmidstocmids = static::get_pandavideo_ids_to_cmids_from_cmids($cmids);
         $cmids = array_keys($cmidstocmids);
 
-        list($insql, $inparams) = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
         $sql = "cm_id {$insql} AND user_id = :user_id";
         $params = array_merge($inparams, ["user_id" => $userid]);
 
@@ -251,7 +249,7 @@ class provider implements
         $context = $userlist->get_context();
         $cm = $DB->get_record("course_modules", ["id" => $context->instanceid]);
 
-        list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+        [$userinsql, $userinparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
         $params = array_merge(["cm_id" => $cm->id], $userinparams);
         $sql = "cm_id = :cm_id AND user_id {$userinsql}";
 
@@ -268,7 +266,7 @@ class provider implements
      */
     protected static function get_pandavideo_ids_to_cmids_from_cmids(array $cmids) {
         global $DB;
-        list($insql, $inparams) = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
         $sql = "
             SELECT c.id, cm.id AS cmid
               FROM {pandavideo} c
