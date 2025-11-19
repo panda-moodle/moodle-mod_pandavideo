@@ -53,7 +53,7 @@ if (!$table->is_downloading()) {
 
     $linkvoltar = "";
     if ($table->userid) {
-        $linkvoltar = " <a href='?id={$table->cmid}' class='pandavideo-report-link'>".get_string("back")."</a>";
+        $linkvoltar = " <a href='?id={$table->cmid}' class='pandavideo-report-link'>" . get_string("back") . "</a>";
     }
 
     if ($userid) {
